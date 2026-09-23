@@ -25,6 +25,10 @@ public class ProductoService {
         return repo.findById(id).orElse(null);
     }
 
+    public Producto actualizar(Producto p) {
+        return repo.save(p);
+    }
+
     public void eliminar(Long id) {
         repo.deleteById(id);
     }

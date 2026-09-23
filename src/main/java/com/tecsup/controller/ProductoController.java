@@ -71,7 +71,7 @@ public class ProductoController {
         existente.setStock(dto.getStock());
         existente.setCategoria(dto.getCategoria());
 
-        return ResponseEntity.ok(service.guardar(existente));
+        return ResponseEntity.ok(service.actualizar(existente));
     }
 
     @DeleteMapping("/{id}")
