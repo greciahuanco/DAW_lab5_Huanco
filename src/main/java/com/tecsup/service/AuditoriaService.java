@@ -15,4 +15,18 @@ public class AuditoriaService {
         AuditoriaLog log = new AuditoriaLog(accion, metodo, detalle);
         repo.save(log);
     }
+
+    public void registrar(
+            String accion,
+            String metodo,
+            String detalle,
+            String usuario) {
+
+        AuditoriaLog log =
+                new AuditoriaLog(accion, metodo, detalle);
+
+        log.setUsuario(usuario);
+
+        repo.save(log);
+    }
 }
