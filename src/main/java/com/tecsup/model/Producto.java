@@ -20,6 +20,13 @@ public class Producto {
     public Producto() {
     }
 
+    public Producto(Long id, String nombre, double precio, int stock) {
+        this.id = id;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.stock = stock;
+    }
+
     public Producto(Long id, String nombre, double precio, int stock, String categoria) {
         this.id = id;
         this.nombre = nombre;

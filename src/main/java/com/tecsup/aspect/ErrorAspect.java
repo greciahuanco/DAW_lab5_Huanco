@@ -15,7 +15,7 @@ public class ErrorAspect {
     private AuditoriaService auditoriaService;
 
     @AfterThrowing(
-            pointcut = "execution(* com.tecsup.service.ProductoService.*(..))",
+            pointcut = "execution(* com.tecsup.service.ProductoService.*(..)) || execution(* com.tecsup.service.CategoriaService.*(..))",
             throwing = "ex"
     )
     public void capturarError(JoinPoint joinPoint, Exception ex) {

@@ -2,6 +2,7 @@ package com.tecsup.aspect;
 
 import com.tecsup.exception.ForbiddenException;
 import com.tecsup.exception.UnauthorizedException;
+import com.tecsup.model.Categoria;
 import com.tecsup.model.Producto;
 import com.tecsup.service.AuditoriaService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -114,6 +115,26 @@ public class AuditoriaAspect {
         validarRol("ADMIN", "USER");
     }
 
+    @Before("execution(* com.tecsup.service.CategoriaService.guardar(..))")
+    public void validarCrearCategoria() {
+        validarRol("ADMIN", "USER");
+    }
+
+    @Before("execution(* com.tecsup.service.CategoriaService.eliminar(..))")
+    public void validarEliminarCategoria() {
+        validarRol("ADMIN");
+    }
+
+    @Before("execution(* com.tecsup.service.CategoriaService.actualizar(..))")
+    public void validarActualizarCategoria() {
+        validarRol("ADMIN");
+    }
+
+    @Before("execution(* com.tecsup.service.CategoriaService.listar(..))")
+    public void validarListarCategorias() {
+        validarRol("ADMIN", "USER");
+    }
+
     // =========================
     // AUDITORÍA
     // =========================
@@ -171,6 +192,55 @@ public class AuditoriaAspect {
                 "LISTAR",
                 joinPoint.getSignature().getName(),
                 "Se listaron " + productos.size() + " productos",
+                obtenerUsuario()
+        );
+    }
+
+    @AfterReturning("execution(* com.tecsup.service.CategoriaService.guardar(..))")
+    public void auditarGuardarCategoria(JoinPoint joinPoint) {
+        auditoriaService.registrar(
+                "CREAR",
+                joinPoint.getSignature().getName(),
+                "Se registró una categoria",
+                obtenerUsuario()
+        );
+    }
+
+    @AfterReturning("execution(* com.tecsup.service.CategoriaService.eliminar(..))")
+    public void auditarEliminarCategoria(JoinPoint joinPoint) {
+        Long id = (Long) joinPoint.getArgs()[0];
+
+        auditoriaService.registrar(
+                "ELIMINAR",
+                joinPoint.getSignature().getName(),
+                "Se eliminó la categoria con ID: " + id,
+                obtenerUsuario()
+        );
+    }
+
+    @AfterReturning("execution(* com.tecsup.service.CategoriaService.actualizar(..))")
+    public void auditarActualizarCategoria(JoinPoint joinPoint) {
+        Categoria categoria = (Categoria) joinPoint.getArgs()[0];
+
+        auditoriaService.registrar(
+                "ACTUALIZAR",
+                joinPoint.getSignature().getName(),
+                "Se actualizó la categoria con ID: " + categoria.getId(),
+                obtenerUsuario()
+        );
+    }
+
+    @AfterReturning(
+            pointcut = "execution(* com.tecsup.service.CategoriaService.listar(..))",
+            returning = "resultado"
+    )
+    public void auditarListarCategorias(JoinPoint joinPoint, Object resultado) {
+        List<?> categorias = (List<?>) resultado;
+
+        auditoriaService.registrar(
+                "LISTAR",
+                joinPoint.getSignature().getName(),
+                "Se listaron " + categorias.size() + " categorias",
                 obtenerUsuario()
         );
     }
